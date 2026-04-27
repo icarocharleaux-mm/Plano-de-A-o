@@ -11,7 +11,7 @@ st.title("📊 Acompanhamento do Plano de Ação por Filial")
 @st.cache_data(ttl=60) 
 def carregar_dados():
     # Substitua a URL abaixo pelo link gerado no passo a passo (o que tem a palavra 'download' no meio)
-    url = "https://1drv.ms/x/c/6b2fcbf5f5526df1/IQCR0tJnYs6pRbESISmK7TROAd_WqUWayLfItTcbNXO8Yig?download"
+    url = "https://1drv.ms/x/c/6b2fcbf5f5526df1/IQCR0tJnYs6pRbESISmK7TROAd_WqUWayLfItTcbNXO8Yig?e=ejVQAD&nav=MTVfezYyNUJGQjQzLTZDNTItNDg4OC04NDc0LTI3OENFNjA2NDRCOX0"
     
     # Lendo o arquivo Excel (.xlsx) diretamente da nuvem
     df = pd.read_excel(url, skiprows=2)
