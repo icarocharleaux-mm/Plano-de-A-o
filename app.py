@@ -54,6 +54,46 @@ try:
 
     df_filtrado = df[df['Filial'].isin(filiais_selecionadas)]
 
+    # ---------------------------------------------------------
+    # NOVO BLOCO: Indicadores de Topo (Resumo Estratégico)
+    # ---------------------------------------------------------
+    st.subheader("Resumo Estratégico - Marco Zero")
+    
+    if not df_filtrado.empty:
+        # Pega apenas as colunas com as etapas do plano (exclui a coluna 'Filial')
+        cols_metricas = [col for col in df_filtrado.columns if col != 'Filial']
+        
+        # 1. Média Geral do Plano de Ação
+        media_geral = df_filtrado[cols_metricas].mean().mean()
+        
+        # 2. Filial Destaque (Calcula a média de cada filial e pega a maior)
+        medias_por_filial = df_filtrado.set_index('Filial')[cols_metricas].mean(axis=1)
+        filial_destaque = medias_por_filial.idxmax()
+        valor_destaque = medias_por_filial.max()
+        
+        # 3. Etapa Crítica (Calcula a média de cada etapa e pega a menor)
+        medias_por_etapa = df_filtrado[cols_metricas].mean()
+        etapa_critica = medias_por_etapa.idxmin()
+        valor_critico = medias_por_etapa.min()
+        
+        # Cria 3 colunas para colocar os cartões lado a lado
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric(label="Média Geral de Implantação", value=f"{media_geral:.1%}")
+            
+        with col2:
+            st.metric(label=f"🏆 Liderando: {filial_destaque}", value=f"{valor_destaque:.1%}")
+            
+        with col3:
+            st.metric(label=f"⚠️ Foco: {etapa_critica}", value=f"{valor_critico:.1%}")
+            
+    else:
+        st.warning("Selecione pelo menos uma filial na barra lateral para ver os indicadores.")
+        
+    st.divider() # Adiciona uma linha de separação elegante antes da tabela
+    # ---------------------------------------------------------
+
     # 4. Exibição da Tabela com Formatação de Porcentagem
     st.subheader("Visão Geral do Preenchimento")
     
