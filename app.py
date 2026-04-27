@@ -11,7 +11,7 @@ st.title("📊 Acompanhamento do Plano de Ação por Filial")
 @st.cache_data(ttl=60) 
 def carregar_dados():
     # Substitua a URL abaixo pelo link gerado no passo a passo (o que tem a palavra 'download' no meio)
-    url = "https://diaslog-my.sharepoint.com/:x:/g/personal/icaro_nascimento_mmdeliverytransportes_com_br/IQB2Q3wsfo_HRIQyu8lOeQCgAch4BvKQ7ZcvvTOdPHeQS0g?download"
+    url = "https://diaslog-my.sharepoint.com/:x:/g/personal/icaro_nascimento_mmdeliverytransportes_com_br/IQB2Q3wsfo_HRIQyu8lOeQCgAch4BvKQ7ZcvvTOdPHeQS0g?download=1"
     
     # Lendo o arquivo Excel (.xlsx) diretamente da nuvem
     df = pd.read_excel(url, skiprows=2)
