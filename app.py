@@ -9,53 +9,62 @@ st.title("📊 Acompanhamento do Plano de Ação por Filial")
 # 2. Função para carregar e tratar os dados
 @st.cache_data
 def carregar_dados():
-    # Lê o arquivo tratando acentos e usando o separador correto
-    df = pd.read_csv(r'C:\Users\RT\Desktop\plano\planilha.csv', skiprows=2, encoding='latin1', sep=';')
+    # URL do OneDrive (O link que você me passou precisa ser o de "DOWNLOAD DIRETO")
+    # Abaixo ensino como obter esse link
+    url = "https://1drv.ms/x/c/6b2fcbf5f5526df1/IQCR0tJnYs6pRbESISmK7TROAd_WqUWayLfItTcbNXO8Yig?download"
     
-    # A primeira coluna fica sem nome por padrão, vamos renomeá-la para "Filial"
-    df.rename(columns={'Unnamed: 0': 'Filial'}, inplace=True)
+    # Lendo o arquivo Excel (.xlsx) diretamente da nuvem
+    # Pulamos 2 linhas como na planilha original
+    df = pd.read_excel(url, skiprows=2)
     
-    # Remove linhas vazias e preenche os espaços em branco com 0
+    # Renomeando a primeira coluna para 'Filial' (caso ela venha sem nome)
+    df.rename(columns={df.columns[0]: 'Filial'}, inplace=True)
+    
+    # Remove linhas onde a Filial está vazia e preenche o resto com 0
     df = df.dropna(subset=['Filial'])
     df = df.fillna(0)
     
+    # Se os valores vierem como texto (ex: "100%"), vamos converter para número
+    # Se já forem decimais (ex: 1.0 ou 0.05), o pandas cuida disso.
+    
     return df
 
-df = carregar_dados()
+try:
+    df = carregar_dados()
 
-# 3. Barra lateral com filtros
-st.sidebar.header("Filtros")
-filiais = df['Filial'].unique().tolist()
-filiais_selecionadas = st.sidebar.multiselect(
-    "Selecione as Filiais para visualizar:",
-    options=filiais,
-    default=filiais # Começa com todas selecionadas
-)
+    # 3. Barra lateral com filtros
+    st.sidebar.header("Filtros")
+    filiais = df['Filial'].unique().tolist()
+    filiais_selecionadas = st.sidebar.multiselect(
+        "Selecione as Filiais para visualizar:",
+        options=filiais,
+        default=filiais
+    )
 
-# Filtra o dataframe com base na seleção
-df_filtrado = df[df['Filial'].isin(filiais_selecionadas)]
+    df_filtrado = df[df['Filial'].isin(filiais_selecionadas)]
 
-# 4. Exibição da Tabela de Dados
-st.subheader("Visão Geral do Preenchimento")
-st.dataframe(df_filtrado, use_container_width=True)
+    # 4. Exibição da Tabela
+    st.subheader("Visão Geral do Preenchimento")
+    st.dataframe(df_filtrado, use_container_width=True)
 
-# 5. Preparação dos dados para o gráfico (Transformando colunas em linhas para o Plotly)
-df_melted = df_filtrado.melt(
-    id_vars=['Filial'], 
-    var_name='Etapa do Plano de Ação', 
-    value_name='Status/Progresso'
-)
+    # 5. Gráfico
+    df_melted = df_filtrado.melt(
+        id_vars=['Filial'], 
+        var_name='Etapa do Plano de Ação', 
+        value_name='Status/Progresso'
+    )
 
-# 6. Gráfico Interativo
-st.subheader("Evolução por Etapa")
-fig = px.bar(
-    df_melted, 
-    x='Filial', 
-    y='Status/Progresso', 
-    color='Etapa do Plano de Ação', 
-    barmode='group',
-    text_auto='.2f' # Mostra o valor em cima da barra
-)
+    st.subheader("Evolução por Etapa")
+    fig = px.bar(
+        df_melted, 
+        x='Filial', 
+        y='Status/Progresso', 
+        color='Etapa do Plano de Ação', 
+        barmode='group',
+        text_auto='.2f'
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
-fig.update_layout(xaxis_title="Filial", yaxis_title="Status do Preenchimento")
-st.plotly_chart(fig, use_container_width=True)
+except Exception as e:
+    st.error(f"Erro ao carregar os dados da nuvem: {e}")
+    st.info("Certifique-se de que o link do OneDrive está configurado para download direto.")
