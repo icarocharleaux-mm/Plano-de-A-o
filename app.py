@@ -7,14 +7,13 @@ st.set_page_config(page_title="Dash - Plano de Ação das Filiais", layout="wide
 st.title("📊 Acompanhamento do Plano de Ação por Filial")
 
 # 2. Função para carregar e tratar os dados
-@st.cache_data
+# ttl=60 significa que o cache dura 60 segundos. Depois disso, ele busca dados novos!
+@st.cache_data(ttl=60) 
 def carregar_dados():
-    # URL do OneDrive (O link que você me passou precisa ser o de "DOWNLOAD DIRETO")
-    # Abaixo ensino como obter esse link
+    # Substitua a URL abaixo pelo link gerado no passo a passo (o que tem a palavra 'download' no meio)
     url = "https://1drv.ms/x/c/6b2fcbf5f5526df1/IQCR0tJnYs6pRbESISmK7TROAd_WqUWayLfItTcbNXO8Yig?download"
     
     # Lendo o arquivo Excel (.xlsx) diretamente da nuvem
-    # Pulamos 2 linhas como na planilha original
     df = pd.read_excel(url, skiprows=2)
     
     # Renomeando a primeira coluna para 'Filial' (caso ela venha sem nome)
@@ -23,9 +22,6 @@ def carregar_dados():
     # Remove linhas onde a Filial está vazia e preenche o resto com 0
     df = df.dropna(subset=['Filial'])
     df = df.fillna(0)
-    
-    # Se os valores vierem como texto (ex: "100%"), vamos converter para número
-    # Se já forem decimais (ex: 1.0 ou 0.05), o pandas cuida disso.
     
     return df
 
@@ -63,8 +59,10 @@ try:
         barmode='group',
         text_auto='.2f'
     )
+    
+    fig.update_layout(xaxis_title="Filial", yaxis_title="Status do Preenchimento")
     st.plotly_chart(fig, use_container_width=True)
 
 except Exception as e:
-    st.error(f"Erro ao carregar os dados da nuvem: {e}")
-    st.info("Certifique-se de que o link do OneDrive está configurado para download direto.")
+    st.error(f"Erro ao carregar os dados: {e}")
+    st.info("Verifique se o link da planilha é de download direto e público.")
