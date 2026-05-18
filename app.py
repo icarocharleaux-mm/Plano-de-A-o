@@ -12,7 +12,7 @@ st.title("📊 Acompanhamento do Plano de Ação por Filial")
 # 2. Função turbinada com carimbo de tempo e tratamento de data
 @st.cache_data(ttl=600)
 def carregar_dados():
-    url = "https://diaslog-my.sharepoint.com/:x:/g/personal/icaro_nascimento_mmdeliverytransportes_com_br/IQB2Q3wsfo_HRIQyu8lOeQCgAch4BvKQ7ZcvvTOdPHeQS0g?download=1"
+    url = "https://1drv.ms/x/c/6b2fcbf5f5526df1/IQDkHdGsw26ERaPM_TOY35tvAX-Vn3LG8fea7r1C9CUVpyQ?e=SGqtcU?download=1"
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
